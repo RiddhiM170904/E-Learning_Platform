@@ -203,13 +203,6 @@ VITE_API_URL=http://localhost:5000/api
 
 After running the seed script (`node backend/seed.js`):
 
-**Admin Account**
-- Email: `admin@elearning.com`
-- Password: `admin123`
-
-**User Account**
-- Email: `demo@elearning.com`
-- Password: `demo123`
 
 ## 🎨 Screenshots
 
