@@ -124,14 +124,7 @@ E-Learning_Platform/
 
 ### Environment Variables
 
-#### Backend `.env`
-```env
-PORT=5000
-NODE_ENV=development
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/elearning
-JWT_SECRET=your_super_secret_jwt_key_change_in_production
-JWT_EXPIRE=7d
-CLIENT_URL=http://localhost:5173
+
 ```
 
 #### Frontend `.env`
@@ -248,8 +241,7 @@ Comprehensive admin interface for managing courses and users.
 2. Go to [Render](https://render.com)
 3. Create new Web Service
 4. Connect your repository
-5. Set environment variables (MONGO_URI, JWT_SECRET, etc.)
-6. Deploy!
+5. Deploy!
 
 ### Database (MongoDB Atlas)
 
