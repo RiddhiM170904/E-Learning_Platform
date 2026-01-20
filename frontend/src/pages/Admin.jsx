@@ -8,6 +8,7 @@ const Admin = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCourseForm, setShowCourseForm] = useState(false);
+  const [editingCourse, setEditingCourse] = useState(null);
   const [courseForm, setCourseForm] = useState({
     title: '',
     description: '',
@@ -45,7 +46,12 @@ const Admin = () => {
   const handleCreateCourse = async (e) => {
     e.preventDefault();
     try {
-      await courseService.createCourse(courseForm);
+      if (editingCourse) {
+        await courseService.updateCourse(editingCourse._id, courseForm);
+        setEditingCourse(null);
+      } else {
+        await courseService.createCourse(courseForm);
+      }
       setShowCourseForm(false);
       setCourseForm({
         title: '',
@@ -58,9 +64,37 @@ const Admin = () => {
       });
       fetchData();
     } catch (err) {
-      console.error('Failed to create course:', err);
-      alert('Failed to create course');
+      console.error('Failed to save course:', err);
+      alert('Failed to save course');
     }
+  };
+
+  const handleEditCourse = (course) => {
+    setEditingCourse(course);
+    setCourseForm({
+      title: course.title,
+      description: course.description,
+      price: course.price,
+      category: course.category,
+      difficulty: course.difficulty,
+      thumbnailUrl: course.thumbnailUrl || '',
+      lessons: course.lessons || []
+    });
+    setShowCourseForm(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCourse(null);
+    setShowCourseForm(false);
+    setCourseForm({
+      title: '',
+      description: '',
+      price: 0,
+      category: 'Programming',
+      difficulty: 'Beginner',
+      thumbnailUrl: '',
+      lessons: []
+    });
   };
 
   const handleDeleteCourse = async (id) => {
@@ -239,7 +273,13 @@ const Admin = () => {
                     <div className="flex justify-between items-center mb-6">
                       <h3 className="text-xl font-bold">All Courses ({courses.length})</h3>
                       <button
-                        onClick={() => setShowCourseForm(!showCourseForm)}
+                        onClick={() => {
+                          if (showCourseForm && editingCourse) {
+                            handleCancelEdit();
+                          } else {
+                            setShowCourseForm(!showCourseForm);
+                          }
+                        }}
                         className="btn-primary"
                       >
                         {showCourseForm ? 'Cancel' : 'Create Course'}
@@ -248,7 +288,9 @@ const Admin = () => {
 
                     {showCourseForm && (
                       <div className="bg-gray-50 p-6 rounded-lg mb-6">
-                        <h4 className="text-lg font-semibold mb-4">Create New Course</h4>
+                        <h4 className="text-lg font-semibold mb-4">
+                          {editingCourse ? 'Edit Course' : 'Create New Course'}
+                        </h4>
                         <form onSubmit={handleCreateCourse} className="space-y-4">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
@@ -321,7 +363,7 @@ const Admin = () => {
                             />
                           </div>
                           <button type="submit" className="btn-primary">
-                            Create Course
+                            {editingCourse ? 'Update Course' : 'Create Course'}
                           </button>
                         </form>
                       </div>
@@ -332,12 +374,20 @@ const Admin = () => {
                         <div key={course._id} className="border border-gray-200 rounded-lg p-4">
                           <div className="flex justify-between items-start mb-2">
                             <h4 className="font-bold text-lg">{course.title}</h4>
-                            <button
-                              onClick={() => handleDeleteCourse(course._id)}
-                              className="text-red-600 hover:text-red-900 text-sm"
-                            >
-                              Delete
-                            </button>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleEditCourse(course)}
+                                className="text-primary-600 hover:text-primary-900 text-sm"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDeleteCourse(course._id)}
+                                className="text-red-600 hover:text-red-900 text-sm"
+                              >
+                                Delete
+                              </button>
+                            </div>
                           </div>
                           <p className="text-sm text-gray-600 mb-2 line-clamp-2">{course.description}</p>
                           <div className="flex items-center gap-2 text-xs">

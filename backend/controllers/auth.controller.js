@@ -6,7 +6,7 @@ import { sendTokenResponse } from '../utils/tokenUtils.js';
 // @access  Public
 export const signup = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     // Validate input
     if (!name || !email || !password) {
@@ -36,7 +36,8 @@ export const signup = async (req, res, next) => {
     const user = await User.create({
       name,
       email,
-      passwordHash: password
+      passwordHash: password,
+      role: role && (role === 'admin' || role === 'user') ? role : 'user'
     });
 
     sendTokenResponse(user, 201, res);

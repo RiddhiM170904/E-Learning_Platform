@@ -3,7 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Signup = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+  const [formData, setFormData] = useState({ 
+    name: '', 
+    email: '', 
+    password: '', 
+    confirmPassword: '',
+    role: 'user'
+  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
@@ -31,8 +37,13 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      await signup(formData.name, formData.email, formData.password);
-      navigate('/dashboard');
+      await signup(formData.name, formData.email, formData.password, formData.role);
+      // Navigate based on role
+      if (formData.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Signup failed. Please try again.');
     } finally {
@@ -118,6 +129,25 @@ const Signup = () => {
                 className="input"
                 placeholder="••••••••"
               />
+            </div>
+
+            <div>
+              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
+                Sign up as
+              </label>
+              <select
+                id="role"
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className="input"
+              >
+                <option value="user">User (Student)</option>
+                <option value="admin">Admin (Instructor)</option>
+              </select>
+              <p className="text-xs text-gray-500 mt-1">
+                Choose User to enroll in courses, or Admin to create and manage courses
+              </p>
             </div>
 
             <button
