@@ -1,5 +1,5 @@
 # E-Learning Platform 🎓
-xdfcgvbhjn
+
 A full-stack, production-ready e-learning platform built with the MERN stack (MongoDB, Express, React, Node.js). This platform enables users to browse courses, enroll, track their learning progress, while administrators can manage courses and users through a comprehensive admin panel.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
